@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sharedPreferences = getSharedPreferences(TAG,MODE_PRIVATE);
         editor = sharedPreferences.edit();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int lastProgress;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 for (TextView x:views) {x.setTextSize(progress);}
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {//record state
-
+                lastProgress = seekBar.getProgress();
             }
 
             @Override
@@ -54,6 +56,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Snackbar snackbar = Snackbar.make(layout,
                         "Font Size Changed To " + seekBar.getProgress() + "sp",
                         Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                seekBar.setProgress(lastProgress);
+                                for (TextView x:views) {x.setTextSize(lastProgress);}
+                                Snackbar.make(layout,"Font Size Reverted Back To " + lastProgress
+                                + "sp", Snackbar.LENGTH_LONG);
+                            }
+                        }
+                );
+                snackbar.setActionTextColor(Color.BLUE);
+                View snackBarView = snackbar.getView();
+                TextView textView = snackBarView.findViewById(R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
                 snackbar.show();
             }
         });
