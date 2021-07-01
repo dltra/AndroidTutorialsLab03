@@ -1,6 +1,7 @@
 package com.tradan.lab03;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     String TAG = "com.tradan.lab03.sharedprefs";
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView[] views;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    ConstraintLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +31,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tRight = findViewById(R.id.topright_textview);
         seekBar = findViewById(R.id.seekbar);
         views = new TextView[]{bRight,bLeft,tRight,tLeft};
+        layout = findViewById(R.id.activity_main_layout);
         bRight.setOnClickListener(this);
         bLeft.setOnClickListener(this);
         tLeft.setOnClickListener(this);
         tRight.setOnClickListener(this);
         sharedPreferences = getSharedPreferences(TAG,MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                for (TextView x:views) {x.setTextSize(progress);}
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {//record state
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {//pop snackbar
+                Snackbar snackbar = Snackbar.make(layout,
+                        "Font Size Changed To " + seekBar.getProgress() + "sp",
+                        Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        });
         setInitialValues();
     }
 
