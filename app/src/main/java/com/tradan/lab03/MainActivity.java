@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ConstraintLayout layout;
+    long startTime, clicks;
+    float cPS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         setInitialValues();
+        startTime = System.currentTimeMillis();
     }
 
     private void setInitialValues() {
@@ -89,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView x = (TextView)v;
         x.setText(""+(Integer.parseInt(x.getText().toString())+1));
         editor.putString(x.getTag().toString(),x.getText().toString()).apply();
+        cPS = ++clicks/((System.currentTimeMillis()-startTime)/1000f);
+        Toast.makeText(this,"" +cPS, Toast.LENGTH_SHORT).show();
     }
 
     @Override
