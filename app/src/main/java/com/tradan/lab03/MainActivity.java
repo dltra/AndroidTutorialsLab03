@@ -77,6 +77,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 snackbar.show();
             }
         });
+        layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                editor.clear().apply();
+                setInitialValues();
+                return false;
+            }
+        });
         setInitialValues();
         startTime = System.currentTimeMillis();
     }
